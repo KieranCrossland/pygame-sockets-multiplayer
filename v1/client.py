@@ -1,6 +1,7 @@
 import socket
 import threading
 import pygame
+import time
 HOST = "localhost"
 PORT = 5555
 client_ppos = { "yellow": {"x": 0, "y":  0}, "cyan": {"x": 0, "y": 0}}
@@ -12,11 +13,11 @@ def send_pos(client_socket, player_name):
             client_socket.send(str(f"{current_x} {current_y} ").encode('utf-8'))
         except:
             print("Failed to send position to server")
-        pygame.time.delay(30)
+        pygame.time.delay(40)
 
 def get_pos(client_socket):
     while True:
-        pygame.time.delay(30)
+        pygame.time.delay(40)
         try:
             message = client_socket.recv(1024).decode('utf-8')
             msgparts = message.split(" ")
@@ -43,19 +44,29 @@ if __name__ == "__main__":
         #The client waits for a message from the server containing the list online players
         online_players = client.recv(1024).decode("utf-8")
         print(f"Online players: {online_players}")
-        player_name = input("Select player ")
-    # Send the player name to the server
+
+        # Send the player name to the server
+        player_name = input("Select player ") 
         client.send(player_name.encode('utf-8'))
+        initial_srv_ppos = client.recv(1024).decode("utf-8")
+        ispps = initial_srv_ppos.split(" ")
+        client_ppos["yellow"]["x"] = int(ispps[0])
+        client_ppos["yellow"]["y"] = int(ispps[1])
+        client_ppos["cyan"]["x"] = int(ispps[2])
+        client_ppos["cyan"]["y"] = int(ispps[3])
+        
+        print(f"Recieved initial ppos from srv_ppos: {ispps}")
     except:
-        print("running in offline mode")
-        player_name = input("Select player (cyan/yellow): ")
+        print("Failed to establish connection")
+        client.close()
     #Then the client chooses which player they want to be  
     send_pos_thread = threading.Thread(target=send_pos, args=(client, player_name))
     get_pos_thread = threading.Thread(target=get_pos, args=(client,))
 
     # Start the threads
-    send_pos_thread.start()
     get_pos_thread.start()
+    send_pos_thread.start()
+  
 
     pygame.init()
     clock = pygame.time.Clock()
