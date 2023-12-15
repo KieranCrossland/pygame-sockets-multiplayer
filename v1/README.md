@@ -6,3 +6,6 @@ server sends string of a dictionary of online players to the client.
 server waits for a response from the client of what player they want to be "cyan" or "yellow".
 server sends the current srv_ppos values as a string eg:
 client_socket.send(f"{yellow_x} {yellow_y} {cyan_x} {cyan_y}".encode("utf-8"))
+client uses as its initial client_ppos.
+
+handshake complete.
