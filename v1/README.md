@@ -1,4 +1,4 @@
-All strings are UTF-8 encoding
+All strings are UTF-8 encoded
 
 Server opens on port 5555
 Server waits for a client to connect and then starts the handshake.

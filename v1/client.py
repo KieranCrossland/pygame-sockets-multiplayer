@@ -5,6 +5,7 @@ import time
 HOST = "localhost"
 PORT = 5555
 client_ppos = { "yellow": {"x": 0, "y":  0}, "cyan": {"x": 0, "y": 0}}
+
 def send_pos(client_socket, player_name):
     while True:
         current_x = client_ppos[player_name]["x"]
